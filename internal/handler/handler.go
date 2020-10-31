@@ -2,6 +2,7 @@ package handler
 
 import (
 	"github.com/chrusty/tunecast/api"
+	"github.com/chrusty/tunecast/internal/library"
 	"github.com/labstack/echo"
 	"github.com/sirupsen/logrus"
 )
@@ -10,13 +11,15 @@ import (
 type Handler struct {
 	indentString string
 	logger       *logrus.Logger
+	mediaLibrary *library.MediaLibrary
 }
 
 // New returns a configured handler:
-func New(logger *logrus.Logger) *Handler {
+func New(logger *logrus.Logger, mediaLibrary *library.MediaLibrary) *Handler {
 	return &Handler{
 		indentString: "  ",
 		logger:       logger,
+		mediaLibrary: mediaLibrary,
 	}
 }
 

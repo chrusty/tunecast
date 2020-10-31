@@ -12,6 +12,7 @@ require (
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/sirupsen/logrus v1.7.0
 	github.com/stretchr/testify v1.5.1
+	golang.org/x/mod v0.3.0
 	golang.org/x/net v0.0.0-20201026091529-146b70c837a4 // indirect
 	gopkg.in/check.v1 v1.0.0-20200902074654-038fdea0a05b // indirect
 )

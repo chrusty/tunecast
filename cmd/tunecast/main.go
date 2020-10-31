@@ -6,6 +6,7 @@ import (
 	"github.com/chrusty/tunecast/api"
 	"github.com/chrusty/tunecast/internal/configuration"
 	"github.com/chrusty/tunecast/internal/handler"
+	"github.com/chrusty/tunecast/internal/library"
 	"github.com/chrusty/tunecast/internal/middleware"
 
 	oapiMiddleware "github.com/deepmap/oapi-codegen/pkg/middleware"
@@ -32,6 +33,15 @@ func main() {
 		logger.WithError(err).Fatal("Invalid log level")
 	}
 	logger.SetLevel(loggingLevel)
+
+	// Prepare a media library:
+	mediaLibrary, err := library.New(logger, config)
+	if err != nil {
+		logger.WithError(err).Fatal("Unable to prepare a media library")
+	}
+
+	// Prepare an API handler:
+	apiHandler := handler.New(logger, mediaLibrary)
 
 	// Load the OpenAPI spec:
 	openAPISpec, err := api.GetSwagger()
@@ -64,7 +74,7 @@ func main() {
 	echoRouter.Use(oapiMiddleware.OapiRequestValidatorWithOptions(openAPISpec, &oapiMiddleware.Options{}))
 
 	// Add the handler:
-	api.RegisterHandlers(echoRouter, handler.New(logger))
+	api.RegisterHandlers(echoRouter, apiHandler)
 
 	// Serve with Mux (allows us to host static content and the API together):
 	muxRouter := mux.NewRouter()
