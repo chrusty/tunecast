@@ -17,7 +17,7 @@ build:
 	@echo " => Building (./bin) ..."
 	@mkdir -p bin
 	@echo "Building bin/tunecast ..."
-	@go build -o bin/tunecast.linux-amd64 cmd/tunecast/main.go
+	@go build -o bin/tunecast cmd/tunecast/main.go
 
 test:
 	@echo " => Running tests ..."
