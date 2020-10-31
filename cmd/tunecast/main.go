@@ -6,7 +6,6 @@ import (
 	"github.com/chrusty/tunecast/api"
 	"github.com/chrusty/tunecast/internal/configuration"
 	"github.com/chrusty/tunecast/internal/handler"
-	"github.com/chrusty/tunecast/internal/library"
 	"github.com/chrusty/tunecast/internal/middleware"
 
 	oapiMiddleware "github.com/deepmap/oapi-codegen/pkg/middleware"
@@ -34,14 +33,14 @@ func main() {
 	}
 	logger.SetLevel(loggingLevel)
 
-	// Prepare a media library:
-	mediaLibrary, err := library.New(logger, config)
-	if err != nil {
-		logger.WithError(err).Fatal("Unable to prepare a media library")
-	}
+	// // Prepare a media library:
+	// mediaLibrary, err := library.New(logger, config)
+	// if err != nil {
+	// 	logger.WithError(err).Fatal("Unable to prepare a media library")
+	// }
 
 	// Prepare an API handler:
-	apiHandler := handler.New(logger, mediaLibrary)
+	apiHandler := handler.New(logger, nil)
 
 	// Load the OpenAPI spec:
 	openAPISpec, err := api.GetSwagger()
@@ -78,7 +77,16 @@ func main() {
 
 	// Serve with Mux (allows us to host static content and the API together):
 	muxRouter := mux.NewRouter()
+
+	// Add the API:
+	logger.Info("Serving API on /api/v1")
 	muxRouter.PathPrefix("/api/v1").Handler(http.StripPrefix("/api/v1", echoRouter))
-	logger.Infof("Listening on %s ...", config.HTTP.ListenAddress)
+
+	// Add the media share:
+	logger.Info("Serving media on /media")
+	muxRouter.PathPrefix("/media").Handler(http.StripPrefix("/media", http.FileServer(http.Dir(config.Library.Path))))
+
+	// Listen:
+	logger.Infof("Listening on %s", config.HTTP.ListenAddress)
 	logger.WithError(http.ListenAndServe(config.HTTP.ListenAddress, muxRouter)).Fatal("Stopped listening")
 }
