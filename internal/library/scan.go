@@ -3,6 +3,9 @@ package library
 import (
 	"os"
 	"path/filepath"
+
+	"github.com/chrusty/tunecast/api"
+	"github.com/chrusty/tunecast/internal/utils"
 )
 
 // scanFiles walks the media directory:
@@ -18,12 +21,42 @@ func (l *MediaLibrary) fileWalkFunc(path string, info os.FileInfo, err error) er
 		return err
 	}
 
-	// Record files:
-	if !info.IsDir() {
+	// Record folders:
+	if info.IsDir() {
 		l.logger.
 			WithField("path", path).
 			WithField("modified", info.ModTime().String()).
-			Debug("Found a media file")
+			Debug("Found a library folder")
+
+		libraryItem := &api.LibraryItem{
+			Cover:    utils.String(""),
+			ItemType: utils.String("folder"),
+			Path:     utils.String(path),
+		}
+
+		return l.libraryStorage.AddLibraryItem(libraryItem)
 	}
+
+	// Record media files:
+	if l.supportedFormat(path) {
+		l.logger.
+			WithField("path", path).
+			WithField("modified", info.ModTime().String()).
+			Debug("Found a library file")
+
+		libraryItem := &api.LibraryItem{
+			Cover:    utils.String(""),
+			ItemType: utils.String("file"),
+			Path:     utils.String(path),
+		}
+
+		return l.libraryStorage.AddLibraryItem(libraryItem)
+	}
+
+	// If we get this far then we found a file with an unsupported format:
+	l.logger.
+		WithField("path", path).
+		Warn("Unsupported format")
+
 	return nil
 }

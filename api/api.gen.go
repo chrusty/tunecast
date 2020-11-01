@@ -10,6 +10,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	openapi_types "github.com/deepmap/oapi-codegen/pkg/types"
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/labstack/echo/v4"
 	"io/ioutil"
@@ -26,9 +27,11 @@ type Error struct {
 
 // LibraryItem defines model for LibraryItem.
 type LibraryItem struct {
-	ItemLink *string `json:"itemLink,omitempty"`
-	ItemName *string `json:"itemName,omitempty"`
-	ItemType *string `json:"itemType,omitempty"`
+	Added    *openapi_types.Date `json:"added,omitempty"`
+	Cover    *string             `json:"cover,omitempty"`
+	ItemType *string             `json:"itemType,omitempty"`
+	Path     *string             `json:"path,omitempty"`
+	Uuid     *string             `json:"uuid,omitempty"`
 }
 
 // RequestEditorFn  is the function signature for the RequestEditor callback function
@@ -296,13 +299,14 @@ func RegisterHandlers(router EchoRouter, si ServerInterface) {
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"H4sIAAAAAAAC/5RSy47TQBD8FavhaCXe3ZtvgBCKtEIcckMcJnY5mcXzoLu9KIr872hmnAewIO1p2v0o",
-	"V1f1ibrgYvDwKtSeSLoDnMnhR+bAKYgcIlgtcroLPdI7BHZGqSXr9eGeatJjRPnEHkxzTQ4iZp+7l6Io",
-	"W7+nea6J8WOyjJ7arwXz2v/tAhZ2T+g0YT3aHRs+bhTub05W4R6t//7Cn+pc/Gwc/lnc5uSJegxmGtNK",
-	"Qxh7MNUEP7lE8JIY7HjL72afPxinlPVDKMDSsY1qg6eWtgdU28njgxGt3n3ZVPBmN0Iqh96aSsDP4CrJ",
-	"yKbLMzWp1TGhn+eopmewFMC7VbNq0jIhwptoqaWHVbO6o5qi0UNWaD0W/VK8h6YnCWgS/qanlj5BF4kp",
-	"eSMxeCni3jdN8d0rfJ40MY62y7PrJ0kczodzNiMPvmUM1NKb9fXE1st9rW/tvIpnmM2xaPe7ZjJ1HUSG",
-	"aawutCl3LZa9gt//aJWbf4EAlkJNMjmXhaT3HH4KKj1gse6s8TzP868AAAD//77yoQhZAwAA",
+	"H4sIAAAAAAAC/5STT4/TMBDFv0o0cIya7O4tN0AIVeLAoTfEwbUnrVfxH8bjoqrKd0djp02BCmlPGf+Z",
+	"15/fm15ABxeDR88JhgskfUSnSvmZKJAUkUJEYotlWweD8h0DOcUwgPX88gwt8DliXeIBCeYWHKakDuX2",
+	"cpiYrD/APLdA+DNbQgPD96q53v9xEwv7V9QsWl/tnhSdt4zuXyZljAjdQRnFuDJdf7YFHU5ID4BasIxu",
+	"VzYvYHBUeRKd0U6igz47AV2WY5gM0h3nKhMVHx/q52zNYyf+eqtsWT+GCpI02cg2eBhgd8Rmlz1+Uomb",
+	"D9+2DXq1nzA1Do1VTUI6ITUSACldelpgy5OoX/ughRNSqoJPm37TC1yI6FW0MMDLpt88QX1H8babqvNS",
+	"H5DlI9Yr0d8aGOAL8hIOSKopBp9qLM99XyfGM/rSqWKcrC693WsShuvISSURlMb3hCMM8K5bh7NbJrO7",
+	"H4TVPEWkztW7Pz1LWWtMacxTc8OGcmuJ+A18/8Oq/5YHALgctJCyc8VI+EjhV8KGj7hEd/V4nuf5dwAA",
+	"AP//PcSUBZMDAAA=",
 }
 
 // GetSwagger returns the Swagger specification corresponding to the generated code

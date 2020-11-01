@@ -6,7 +6,9 @@ import (
 	"github.com/chrusty/tunecast/api"
 	"github.com/chrusty/tunecast/internal/configuration"
 	"github.com/chrusty/tunecast/internal/handler"
+	"github.com/chrusty/tunecast/internal/library"
 	"github.com/chrusty/tunecast/internal/middleware"
+	"github.com/chrusty/tunecast/internal/storage"
 
 	oapiMiddleware "github.com/deepmap/oapi-codegen/pkg/middleware"
 	"github.com/gorilla/mux"
@@ -33,14 +35,20 @@ func main() {
 	}
 	logger.SetLevel(loggingLevel)
 
-	// // Prepare a media library:
-	// mediaLibrary, err := library.New(logger, config)
-	// if err != nil {
-	// 	logger.WithError(err).Fatal("Unable to prepare a media library")
-	// }
+	// Prepare a storage implementation for the library DB:
+	libraryStorage, err := storage.NewSQLite(logger, config)
+	if err != nil {
+		logger.WithError(err).Fatal("Unable to prepare DB storage")
+	}
+
+	// Prepare a media library:
+	mediaLibrary, err := library.New(logger, config, libraryStorage)
+	if err != nil {
+		logger.WithError(err).Fatal("Unable to prepare a media library")
+	}
 
 	// Prepare an API handler:
-	apiHandler := handler.New(logger, nil)
+	apiHandler := handler.New(logger, mediaLibrary)
 
 	// Load the OpenAPI spec:
 	openAPISpec, err := api.GetSwagger()

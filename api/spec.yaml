@@ -40,13 +40,26 @@ components:
     LibraryItem:
       type: object
       properties:
-        itemName:
+        path:
           type: string
         itemType:
           type: string
-          default: folder
+          default: file
           enum:
-            - folder
             - file
-        itemLink:
+            - folder
+        cover:
           type: string
+        added:
+          type: string
+          format: date
+        uuid:
+          type: string
+    SortBy:
+      type: string
+      default: name
+      enum:
+        - nameAsc
+        - nameDesc
+        - dateAsc
+        - dateDesc
