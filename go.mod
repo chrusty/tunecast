@@ -4,6 +4,7 @@ go 1.15
 
 require (
 	github.com/caarlos0/env v3.5.0+incompatible
+	github.com/davecgh/go-spew v1.1.1
 	github.com/deepmap/oapi-codegen v1.4.0
 	github.com/getkin/kin-openapi v0.26.0
 	github.com/google/uuid v1.1.2

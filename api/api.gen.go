@@ -29,7 +29,7 @@ type Error struct {
 type LibraryItem struct {
 	Added    *openapi_types.Date `json:"added,omitempty"`
 	Cover    *string             `json:"cover,omitempty"`
-	ItemType *string             `json:"itemType,omitempty"`
+	IsFolder *bool               `json:"isFolder,omitempty"`
 	Path     *string             `json:"path,omitempty"`
 	Uuid     *string             `json:"uuid,omitempty"`
 }
@@ -299,14 +299,13 @@ func RegisterHandlers(router EchoRouter, si ServerInterface) {
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"H4sIAAAAAAAC/5STT4/TMBDFv0o0cIya7O4tN0AIVeLAoTfEwbUnrVfxH8bjoqrKd0djp02BCmlPGf+Z",
-	"15/fm15ABxeDR88JhgskfUSnSvmZKJAUkUJEYotlWweD8h0DOcUwgPX88gwt8DliXeIBCeYWHKakDuX2",
-	"cpiYrD/APLdA+DNbQgPD96q53v9xEwv7V9QsWl/tnhSdt4zuXyZljAjdQRnFuDJdf7YFHU5ID4BasIxu",
-	"VzYvYHBUeRKd0U6igz47AV2WY5gM0h3nKhMVHx/q52zNYyf+eqtsWT+GCpI02cg2eBhgd8Rmlz1+Uomb",
-	"D9+2DXq1nzA1Do1VTUI6ITUSACldelpgy5OoX/ughRNSqoJPm37TC1yI6FW0MMDLpt88QX1H8babqvNS",
-	"H5DlI9Yr0d8aGOAL8hIOSKopBp9qLM99XyfGM/rSqWKcrC693WsShuvISSURlMb3hCMM8K5bh7NbJrO7",
-	"H4TVPEWkztW7Pz1LWWtMacxTc8OGcmuJ+A18/8Oq/5YHALgctJCyc8VI+EjhV8KGj7hEd/V4nuf5dwAA",
-	"AP//PcSUBZMDAAA=",
+	"H4sIAAAAAAAC/5RTTW/bMAz9Kwa3oxG77c23bdiGADvs0NuwAyPRiQrrYySdISj83wdJTtNswYCeRIt8",
+	"z4+P1DOY6FMMFFRgeAYxB/JYws/MkXOQOCZidVSuTbSUzzGyR4UBXNCHe2hBT4nqJ+2JYWnBkwjuS/Wa",
+	"FGUX9rAsLTD9mh2TheFH5bzU/3whi7snMpq5vrkdI5+2Sv5fTWhtJnolyqLSRdP5ty2YeCS+IagFJ1/i",
+	"ZK+SuxgnwpCzCfVwEzbPzt5u8K8W8pULY8zFlsSwS+pigAEeD9Q8zoE+oWjz4fu2oYC7iaTxZB02Qnwk",
+	"brKvjKZgWlCnU2Y/46CFI7FUwrtNv+mzuJgoYHIwwMOm39xB7aNY1k3V0BzvSfORHcXMv7UwwFfS1XPI",
+	"w5IUg1S37/u+LkJQCgWJKU3OFGz3JFnDeZNy5JR8Ab5nGmGAd91l57p14brX872Yh8x4qt5deyazMSQy",
+	"zlPzIhtK1YjzpG/S9z9Z9RHcEEBrogWZvS9GwkeOv4UaPdA6urPHy7IsfwIAAP//QBtZimoDAAA=",
 }
 
 // GetSwagger returns the Swagger specification corresponding to the generated code

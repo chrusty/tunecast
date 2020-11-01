@@ -5,12 +5,14 @@ import (
 	"fmt"
 	"net/url"
 	"os"
+	"time"
 
 	"github.com/chrusty/tunecast/api"
 	"github.com/chrusty/tunecast/internal/configuration"
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 
+	openapiTypes "github.com/deepmap/oapi-codegen/pkg/types"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -84,18 +86,12 @@ func (s *SQLite) Stop() error {
 
 // AddLibraryItem adds a library item to the DB:
 func (s *SQLite) AddLibraryItem(libraryItem *api.LibraryItem) error {
-	var typeFolder = "false"
 
+	// Mint a new UUID for this item:
 	newUUID := uuid.New()
-	if *libraryItem.ItemType == "folder" {
-		typeFolder = "true"
-	}
-
-	addLibraryItemSQL := fmt.Sprintf(`INSERT INTO libraryItems(path, uuid, folder, cover)
-		VALUES('%s', '%s', '%s', '%s')
-		ON CONFLICT(path) DO UPDATE SET cover='%s';`, url.QueryEscape(*libraryItem.Path), newUUID.String(), typeFolder, *libraryItem.Cover, *libraryItem.Cover)
 
 	// Prepare a statement:
+	addLibraryItemSQL := fmt.Sprintf(`INSERT INTO libraryItems(path, uuid, folder, cover) VALUES('%s', '%s', '%v', '%s') ON CONFLICT(path) DO UPDATE SET cover='%s';`, url.QueryEscape(*libraryItem.Path), newUUID.String(), *libraryItem.IsFolder, *libraryItem.Cover, *libraryItem.Cover)
 	statement, err := s.dbConn.Prepare(addLibraryItemSQL)
 	if err != nil {
 		return err
@@ -108,5 +104,25 @@ func (s *SQLite) AddLibraryItem(libraryItem *api.LibraryItem) error {
 
 // List returns a list of library items beneath a given path:
 func (s *SQLite) List(parentPath string, sortBy string) ([]*api.LibraryItem, error) {
-	return nil, nil
+	libraryItems := []*api.LibraryItem{}
+
+	// Prepare a query:
+	listLibraryItemSQL := fmt.Sprintf(`SELECT path, uuid, folder, cover, added FROM libraryItems LIMIT 100;`)
+	rows, err := s.dbConn.Query(listLibraryItemSQL)
+	if err != nil {
+		return nil, err
+	}
+
+	// Process the rows:
+	for rows.Next() {
+		libraryItem := &api.LibraryItem{}
+		var addedTime time.Time
+		rows.Scan(&libraryItem.Path, &libraryItem.Uuid, &libraryItem.IsFolder, &libraryItem.Cover, &addedTime)
+		libraryItem.Added = &openapiTypes.Date{
+			addedTime,
+		}
+		libraryItems = append(libraryItems, libraryItem)
+	}
+
+	return libraryItems, nil
 }

@@ -42,12 +42,8 @@ components:
       properties:
         path:
           type: string
-        itemType:
-          type: string
-          default: file
-          enum:
-            - file
-            - folder
+        isFolder:
+          type: boolean
         cover:
           type: string
         added:

@@ -32,7 +32,7 @@ func (l *MediaLibrary) fileWalkFunc(path string, info os.FileInfo, err error) er
 
 		libraryItem := &api.LibraryItem{
 			Cover:    utils.String(""),
-			ItemType: utils.String("folder"),
+			IsFolder: utils.Bool(true),
 			Path:     utils.String(relativePath),
 		}
 
@@ -48,7 +48,7 @@ func (l *MediaLibrary) fileWalkFunc(path string, info os.FileInfo, err error) er
 
 		libraryItem := &api.LibraryItem{
 			Cover:    utils.String(""),
-			ItemType: utils.String("file"),
+			IsFolder: utils.Bool(false),
 			Path:     utils.String(relativePath),
 		}
 

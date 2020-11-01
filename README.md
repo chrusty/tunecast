@@ -36,10 +36,9 @@ Music server with Chromecast
     - [x] Handler
     - [ ] Browser
     - [x] MediaShare (/media)
-    - [ ] Library (scan, retrieve etc)
-        - [ ] Storage
-            - [ ] Memory
-            - [ ] SQLite
+    - [x] Library (scan, retrieve etc)
+        - [x] Storage
+            - [x] SQLite
 - [ ] Web UI (from API)
 - [ ] Chromecast integration
     - [ ] Default player at first

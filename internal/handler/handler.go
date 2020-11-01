@@ -3,7 +3,7 @@ package handler
 import (
 	"github.com/chrusty/tunecast/api"
 	"github.com/chrusty/tunecast/internal/library"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
 )
 

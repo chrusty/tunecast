@@ -3,8 +3,6 @@ package handler
 import (
 	"net/http"
 
-	"github.com/chrusty/tunecast/api"
-
 	"github.com/labstack/echo/v4"
 )
 
@@ -12,8 +10,11 @@ import (
 func (h *Handler) GetLibrary(ctx echo.Context) error {
 
 	// List the service-names from storage:
-	response := &[]api.LibraryItem{}
+	libraryItems, err := h.mediaLibrary.List("", "")
+	if err != nil {
+		return h.returnError(ctx, http.StatusInternalServerError, "something broke", err)
+	}
 
 	// Return the response in the body (JSON encoded):
-	return ctx.JSONPretty(http.StatusOK, response, h.indentString)
+	return ctx.JSONPretty(http.StatusOK, libraryItems, h.indentString)
 }
