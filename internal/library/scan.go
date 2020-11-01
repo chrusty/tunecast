@@ -21,6 +21,8 @@ func (l *MediaLibrary) fileWalkFunc(path string, info os.FileInfo, err error) er
 		return err
 	}
 
+	relativePath := path[len(l.config.Library.Path):]
+
 	// Record folders:
 	if info.IsDir() {
 		l.logger.
@@ -31,7 +33,7 @@ func (l *MediaLibrary) fileWalkFunc(path string, info os.FileInfo, err error) er
 		libraryItem := &api.LibraryItem{
 			Cover:    utils.String(""),
 			ItemType: utils.String("folder"),
-			Path:     utils.String(path),
+			Path:     utils.String(relativePath),
 		}
 
 		return l.libraryStorage.AddLibraryItem(libraryItem)
@@ -47,7 +49,7 @@ func (l *MediaLibrary) fileWalkFunc(path string, info os.FileInfo, err error) er
 		libraryItem := &api.LibraryItem{
 			Cover:    utils.String(""),
 			ItemType: utils.String("file"),
-			Path:     utils.String(path),
+			Path:     utils.String(relativePath),
 		}
 
 		return l.libraryStorage.AddLibraryItem(libraryItem)
