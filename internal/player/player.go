@@ -4,6 +4,8 @@ import (
 	"sync"
 
 	"github.com/chrusty/tunecast/api"
+	"github.com/chrusty/tunecast/internal/renderer"
+	"github.com/sirupsen/logrus"
 )
 
 // Player maintains the "intent" of the service:
@@ -11,9 +13,21 @@ import (
 // - Volume
 // - Playing / paused
 type Player struct {
-	mutex  sync.Mutex
-	paused bool
-	queue  []*api.LibraryItem
+	logger   *logrus.Logger
+	mutex    sync.Mutex
+	paused   bool
+	queue    []*api.LibraryItem
+	renderer renderer.Renderer
+	volume   int32
+}
+
+// New returns a configured Player:
+func New(logger *logrus.Logger, renderer renderer.Renderer) *Player {
+	return &Player{
+		logger:   logger,
+		renderer: renderer,
+		volume:   75,
+	}
 }
 
 // AddToQueue adds a libraryItem to our queue:
@@ -24,21 +38,4 @@ func (p *Player) AddToQueue(libraryItem *api.LibraryItem) error {
 	p.queue = append(p.queue, libraryItem)
 
 	return nil
-}
-
-// PlayPause changes the intent to be playing/paused:
-// - Returns TRUE if paused:
-func (p *Player) PlayPause() bool {
-	p.mutex.Lock()
-	defer p.mutex.Unlock()
-
-	// Switch the state:
-	switch p.paused {
-	case true:
-		p.paused = false
-	case false:
-		p.paused = true
-	}
-
-	return p.paused
 }

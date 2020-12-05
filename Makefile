@@ -19,6 +19,9 @@ build:
 	@echo "Building bin/tunecast ..."
 	@go build -o bin/tunecast cmd/tunecast/main.go
 
+run:
+	@DB_SQLITE_PATH=~ LIBRARY_PATH=~/Music LOGGING_LEVEL=trace go run cmd/tunecast/main.go
+
 test:
 	@echo " => Running tests ..."
 	@go test ./... -cover

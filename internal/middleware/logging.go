@@ -44,10 +44,13 @@ func (l *Logging) Handler(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		// Log the result (info for success, warn for failure):
-		if rsp.Status < 500 {
-			l.logger.WithFields(logFields).Infof("handled request")
-		} else {
-			l.logger.WithFields(logFields).Warnf("handled request")
+		switch {
+		case rsp.Status < 400:
+			l.logger.WithFields(logFields).Debug("handled request")
+		case rsp.Status < 500:
+			l.logger.WithFields(logFields).Info("handled request")
+		default:
+			l.logger.WithFields(logFields).Warn("handled request")
 		}
 
 		return err

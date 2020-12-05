@@ -8,6 +8,8 @@ import (
 	"github.com/chrusty/tunecast/internal/handler"
 	"github.com/chrusty/tunecast/internal/library"
 	"github.com/chrusty/tunecast/internal/middleware"
+	"github.com/chrusty/tunecast/internal/player"
+	"github.com/chrusty/tunecast/internal/renderer/chromecast"
 	"github.com/chrusty/tunecast/internal/storage"
 
 	oapiMiddleware "github.com/deepmap/oapi-codegen/pkg/middleware"
@@ -47,8 +49,17 @@ func main() {
 		logger.WithError(err).Fatal("Unable to prepare a media library")
 	}
 
+	// Prepare a Chromecast renderer:
+	chromecastRenderer, err := chromecast.New()
+	if err != nil {
+		logger.WithError(err).Fatal("Unable to prepare a Chromecast renderer")
+	}
+
+	// Prepare a player based on this renderer:
+	mediaPlayer := player.New(logger, chromecastRenderer)
+
 	// Prepare an API handler:
-	apiHandler := handler.New(logger, mediaLibrary)
+	apiHandler := handler.New(logger, mediaLibrary, mediaPlayer)
 
 	// Load the OpenAPI spec:
 	openAPISpec, err := api.GetSwagger()

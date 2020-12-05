@@ -60,7 +60,9 @@ func (l *MediaLibrary) run() error {
 	}
 
 	// Scan for media files:
-	go l.scanFiles()
+	if l.config.Library.Scan {
+		go l.scanFiles()
+	}
 
 	return nil
 }

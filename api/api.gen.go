@@ -10,6 +10,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"github.com/deepmap/oapi-codegen/pkg/runtime"
 	openapi_types "github.com/deepmap/oapi-codegen/pkg/types"
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/labstack/echo/v4"
@@ -32,6 +33,25 @@ type LibraryItem struct {
 	IsFolder *bool               `json:"isFolder,omitempty"`
 	Path     *string             `json:"path,omitempty"`
 	Uuid     *string             `json:"uuid,omitempty"`
+}
+
+// Status defines model for Status.
+type Status struct {
+	Activity *string `json:"activity,omitempty"`
+
+	// The track currently playing
+	Track  *string `json:"track,omitempty"`
+	Volume *Volume `json:"volume,omitempty"`
+}
+
+// Volume defines model for Volume.
+type Volume int32
+
+// PutPlayerVolumeParams defines parameters for PutPlayerVolume.
+type PutPlayerVolumeParams struct {
+
+	// The new value
+	Value Volume `json:"value"`
 }
 
 // RequestEditorFn  is the function signature for the RequestEditor callback function
@@ -107,10 +127,82 @@ func WithRequestEditorFn(fn RequestEditorFn) ClientOption {
 type ClientInterface interface {
 	// GetLibrary request
 	GetLibrary(ctx context.Context) (*http.Response, error)
+
+	// PutPlayerPause request
+	PutPlayerPause(ctx context.Context) (*http.Response, error)
+
+	// PutPlayerPlay request
+	PutPlayerPlay(ctx context.Context) (*http.Response, error)
+
+	// GetPlayerStatus request
+	GetPlayerStatus(ctx context.Context) (*http.Response, error)
+
+	// PutPlayerVolume request
+	PutPlayerVolume(ctx context.Context, params *PutPlayerVolumeParams) (*http.Response, error)
 }
 
 func (c *Client) GetLibrary(ctx context.Context) (*http.Response, error) {
 	req, err := NewGetLibraryRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if c.RequestEditor != nil {
+		err = c.RequestEditor(ctx, req)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PutPlayerPause(ctx context.Context) (*http.Response, error) {
+	req, err := NewPutPlayerPauseRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if c.RequestEditor != nil {
+		err = c.RequestEditor(ctx, req)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PutPlayerPlay(ctx context.Context) (*http.Response, error) {
+	req, err := NewPutPlayerPlayRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if c.RequestEditor != nil {
+		err = c.RequestEditor(ctx, req)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetPlayerStatus(ctx context.Context) (*http.Response, error) {
+	req, err := NewGetPlayerStatusRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if c.RequestEditor != nil {
+		err = c.RequestEditor(ctx, req)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PutPlayerVolume(ctx context.Context, params *PutPlayerVolumeParams) (*http.Response, error) {
+	req, err := NewPutPlayerVolumeRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -151,6 +243,130 @@ func NewGetLibraryRequest(server string) (*http.Request, error) {
 	return req, nil
 }
 
+// NewPutPlayerPauseRequest generates requests for PutPlayerPause
+func NewPutPlayerPauseRequest(server string) (*http.Request, error) {
+	var err error
+
+	queryUrl, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	basePath := fmt.Sprintf("/player/pause")
+	if basePath[0] == '/' {
+		basePath = basePath[1:]
+	}
+
+	queryUrl, err = queryUrl.Parse(basePath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryUrl.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewPutPlayerPlayRequest generates requests for PutPlayerPlay
+func NewPutPlayerPlayRequest(server string) (*http.Request, error) {
+	var err error
+
+	queryUrl, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	basePath := fmt.Sprintf("/player/play")
+	if basePath[0] == '/' {
+		basePath = basePath[1:]
+	}
+
+	queryUrl, err = queryUrl.Parse(basePath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryUrl.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetPlayerStatusRequest generates requests for GetPlayerStatus
+func NewGetPlayerStatusRequest(server string) (*http.Request, error) {
+	var err error
+
+	queryUrl, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	basePath := fmt.Sprintf("/player/status")
+	if basePath[0] == '/' {
+		basePath = basePath[1:]
+	}
+
+	queryUrl, err = queryUrl.Parse(basePath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryUrl.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewPutPlayerVolumeRequest generates requests for PutPlayerVolume
+func NewPutPlayerVolumeRequest(server string, params *PutPlayerVolumeParams) (*http.Request, error) {
+	var err error
+
+	queryUrl, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	basePath := fmt.Sprintf("/player/volume")
+	if basePath[0] == '/' {
+		basePath = basePath[1:]
+	}
+
+	queryUrl, err = queryUrl.Parse(basePath)
+	if err != nil {
+		return nil, err
+	}
+
+	queryValues := queryUrl.Query()
+
+	if queryFrag, err := runtime.StyleParam("form", true, "value", params.Value); err != nil {
+		return nil, err
+	} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+		return nil, err
+	} else {
+		for k, v := range parsed {
+			for _, v2 := range v {
+				queryValues.Add(k, v2)
+			}
+		}
+	}
+
+	queryUrl.RawQuery = queryValues.Encode()
+
+	req, err := http.NewRequest("PUT", queryUrl.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // ClientWithResponses builds on ClientInterface to offer response payloads
 type ClientWithResponses struct {
 	ClientInterface
@@ -182,6 +398,18 @@ func WithBaseURL(baseURL string) ClientOption {
 type ClientWithResponsesInterface interface {
 	// GetLibrary request
 	GetLibraryWithResponse(ctx context.Context) (*GetLibraryResponse, error)
+
+	// PutPlayerPause request
+	PutPlayerPauseWithResponse(ctx context.Context) (*PutPlayerPauseResponse, error)
+
+	// PutPlayerPlay request
+	PutPlayerPlayWithResponse(ctx context.Context) (*PutPlayerPlayResponse, error)
+
+	// GetPlayerStatus request
+	GetPlayerStatusWithResponse(ctx context.Context) (*GetPlayerStatusResponse, error)
+
+	// PutPlayerVolume request
+	PutPlayerVolumeWithResponse(ctx context.Context, params *PutPlayerVolumeParams) (*PutPlayerVolumeResponse, error)
 }
 
 type GetLibraryResponse struct {
@@ -207,6 +435,98 @@ func (r GetLibraryResponse) StatusCode() int {
 	return 0
 }
 
+type PutPlayerPauseResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSONDefault  *Error
+}
+
+// Status returns HTTPResponse.Status
+func (r PutPlayerPauseResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PutPlayerPauseResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type PutPlayerPlayResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSONDefault  *Error
+}
+
+// Status returns HTTPResponse.Status
+func (r PutPlayerPlayResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PutPlayerPlayResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetPlayerStatusResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Intent   *Status `json:"intent,omitempty"`
+		Renderer *Status `json:"renderer,omitempty"`
+	}
+	JSONDefault *Error
+}
+
+// Status returns HTTPResponse.Status
+func (r GetPlayerStatusResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetPlayerStatusResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type PutPlayerVolumeResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSONDefault  *Error
+}
+
+// Status returns HTTPResponse.Status
+func (r PutPlayerVolumeResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PutPlayerVolumeResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 // GetLibraryWithResponse request returning *GetLibraryResponse
 func (c *ClientWithResponses) GetLibraryWithResponse(ctx context.Context) (*GetLibraryResponse, error) {
 	rsp, err := c.GetLibrary(ctx)
@@ -214,6 +534,42 @@ func (c *ClientWithResponses) GetLibraryWithResponse(ctx context.Context) (*GetL
 		return nil, err
 	}
 	return ParseGetLibraryResponse(rsp)
+}
+
+// PutPlayerPauseWithResponse request returning *PutPlayerPauseResponse
+func (c *ClientWithResponses) PutPlayerPauseWithResponse(ctx context.Context) (*PutPlayerPauseResponse, error) {
+	rsp, err := c.PutPlayerPause(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePutPlayerPauseResponse(rsp)
+}
+
+// PutPlayerPlayWithResponse request returning *PutPlayerPlayResponse
+func (c *ClientWithResponses) PutPlayerPlayWithResponse(ctx context.Context) (*PutPlayerPlayResponse, error) {
+	rsp, err := c.PutPlayerPlay(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePutPlayerPlayResponse(rsp)
+}
+
+// GetPlayerStatusWithResponse request returning *GetPlayerStatusResponse
+func (c *ClientWithResponses) GetPlayerStatusWithResponse(ctx context.Context) (*GetPlayerStatusResponse, error) {
+	rsp, err := c.GetPlayerStatus(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetPlayerStatusResponse(rsp)
+}
+
+// PutPlayerVolumeWithResponse request returning *PutPlayerVolumeResponse
+func (c *ClientWithResponses) PutPlayerVolumeWithResponse(ctx context.Context, params *PutPlayerVolumeParams) (*PutPlayerVolumeResponse, error) {
+	rsp, err := c.PutPlayerVolume(ctx, params)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePutPlayerVolumeResponse(rsp)
 }
 
 // ParseGetLibraryResponse parses an HTTP response from a GetLibraryWithResponse call
@@ -249,11 +605,137 @@ func ParseGetLibraryResponse(rsp *http.Response) (*GetLibraryResponse, error) {
 	return response, nil
 }
 
+// ParsePutPlayerPauseResponse parses an HTTP response from a PutPlayerPauseWithResponse call
+func ParsePutPlayerPauseResponse(rsp *http.Response) (*PutPlayerPauseResponse, error) {
+	bodyBytes, err := ioutil.ReadAll(rsp.Body)
+	defer rsp.Body.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PutPlayerPauseResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json"):
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePutPlayerPlayResponse parses an HTTP response from a PutPlayerPlayWithResponse call
+func ParsePutPlayerPlayResponse(rsp *http.Response) (*PutPlayerPlayResponse, error) {
+	bodyBytes, err := ioutil.ReadAll(rsp.Body)
+	defer rsp.Body.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PutPlayerPlayResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json"):
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetPlayerStatusResponse parses an HTTP response from a GetPlayerStatusWithResponse call
+func ParseGetPlayerStatusResponse(rsp *http.Response) (*GetPlayerStatusResponse, error) {
+	bodyBytes, err := ioutil.ReadAll(rsp.Body)
+	defer rsp.Body.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetPlayerStatusResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Intent   *Status `json:"intent,omitempty"`
+			Renderer *Status `json:"renderer,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json"):
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePutPlayerVolumeResponse parses an HTTP response from a PutPlayerVolumeWithResponse call
+func ParsePutPlayerVolumeResponse(rsp *http.Response) (*PutPlayerVolumeResponse, error) {
+	bodyBytes, err := ioutil.ReadAll(rsp.Body)
+	defer rsp.Body.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PutPlayerVolumeResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json"):
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
 	// Browse the media library
 	// (GET /library)
 	GetLibrary(ctx echo.Context) error
+	// Pause
+	// (PUT /player/pause)
+	PutPlayerPause(ctx echo.Context) error
+	// Play (unpause)
+	// (PUT /player/play)
+	PutPlayerPlay(ctx echo.Context) error
+	// Get the status of the player
+	// (GET /player/status)
+	GetPlayerStatus(ctx echo.Context) error
+	// Set the intended volume
+	// (PUT /player/volume)
+	PutPlayerVolume(ctx echo.Context, params PutPlayerVolumeParams) error
 }
 
 // ServerInterfaceWrapper converts echo contexts to parameters.
@@ -267,6 +749,51 @@ func (w *ServerInterfaceWrapper) GetLibrary(ctx echo.Context) error {
 
 	// Invoke the callback with all the unmarshalled arguments
 	err = w.Handler.GetLibrary(ctx)
+	return err
+}
+
+// PutPlayerPause converts echo context to params.
+func (w *ServerInterfaceWrapper) PutPlayerPause(ctx echo.Context) error {
+	var err error
+
+	// Invoke the callback with all the unmarshalled arguments
+	err = w.Handler.PutPlayerPause(ctx)
+	return err
+}
+
+// PutPlayerPlay converts echo context to params.
+func (w *ServerInterfaceWrapper) PutPlayerPlay(ctx echo.Context) error {
+	var err error
+
+	// Invoke the callback with all the unmarshalled arguments
+	err = w.Handler.PutPlayerPlay(ctx)
+	return err
+}
+
+// GetPlayerStatus converts echo context to params.
+func (w *ServerInterfaceWrapper) GetPlayerStatus(ctx echo.Context) error {
+	var err error
+
+	// Invoke the callback with all the unmarshalled arguments
+	err = w.Handler.GetPlayerStatus(ctx)
+	return err
+}
+
+// PutPlayerVolume converts echo context to params.
+func (w *ServerInterfaceWrapper) PutPlayerVolume(ctx echo.Context) error {
+	var err error
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params PutPlayerVolumeParams
+	// ------------- Required query parameter "value" -------------
+
+	err = runtime.BindQueryParameter("form", true, true, "value", ctx.QueryParams(), &params.Value)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter value: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshalled arguments
+	err = w.Handler.PutPlayerVolume(ctx, params)
 	return err
 }
 
@@ -293,19 +820,28 @@ func RegisterHandlers(router EchoRouter, si ServerInterface) {
 	}
 
 	router.GET("/library", wrapper.GetLibrary)
+	router.PUT("/player/pause", wrapper.PutPlayerPause)
+	router.PUT("/player/play", wrapper.PutPlayerPlay)
+	router.GET("/player/status", wrapper.GetPlayerStatus)
+	router.PUT("/player/volume", wrapper.PutPlayerVolume)
 
 }
 
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"H4sIAAAAAAAC/5RTTW/bMAz9Kwa3oxG77c23bdiGADvs0NuwAyPRiQrrYySdISj83wdJTtNswYCeRIt8",
-	"z4+P1DOY6FMMFFRgeAYxB/JYws/MkXOQOCZidVSuTbSUzzGyR4UBXNCHe2hBT4nqJ+2JYWnBkwjuS/Wa",
-	"FGUX9rAsLTD9mh2TheFH5bzU/3whi7snMpq5vrkdI5+2Sv5fTWhtJnolyqLSRdP5ty2YeCS+IagFJ1/i",
-	"ZK+SuxgnwpCzCfVwEzbPzt5u8K8W8pULY8zFlsSwS+pigAEeD9Q8zoE+oWjz4fu2oYC7iaTxZB02Qnwk",
-	"brKvjKZgWlCnU2Y/46CFI7FUwrtNv+mzuJgoYHIwwMOm39xB7aNY1k3V0BzvSfORHcXMv7UwwFfS1XPI",
-	"w5IUg1S37/u+LkJQCgWJKU3OFGz3JFnDeZNy5JR8Ab5nGmGAd91l57p14brX872Yh8x4qt5deyazMSQy",
-	"zlPzIhtK1YjzpG/S9z9Z9RHcEEBrogWZvS9GwkeOv4UaPdA6urPHy7IsfwIAAP//QBtZimoDAAA=",
+	"H4sIAAAAAAAC/9RWz2/bOgz+Vwy+d3gPMBK3fSff3oatKLBDgBa9FD0oNpOos36UotIZRf73gZKTNLDX",
+	"ddhlPUUyqU/kx49UnqFxxjuLlgPUzxCaDRqVlp+IHMnCk/NIrDF9blyL8rtyZBRDDdryxTmUwL3HvMU1",
+	"EuxKMBiCWifvwRiYtF3DblcC4WPUhC3Udxnz6H9/AHPLB2xYsL7oJSnqrxjNOCbVtgL0IqhWMR5j2l9b",
+	"QuO2SBMBlaDDZ9e1J8alcx0qK1aveDN5LEbdTic4SuGaFccwEX3Dequ5l3WLKxU7TkjOe2yhBLTRCEva",
+	"Jk/Jy6sYks13qpcLy4P//UTWTKr5muFDQ9qzdhZquNlgkUxFE4nQctcXR8ARytZ10aRq/k24ghr+mh/F",
+	"Mx+UM7/NXpMM3B4QRuox6ps2kudZVZVgtM27aqwrQdZ25abzuYkWP6rAxf+LqwKtWnYYCoOtVkVA2iIV",
+	"AkTCpLOSpeZO4PfnoIQtUsiAZ7NqVkngzqNVXkMNF7NqdgZZEKl68y4rU9ZrZPmR4irBv2qhhkvkQbwg",
+	"qg/e2ZALf15VuaMso00nlfedbtLZ+UOQGPYtKSvNaMLP+H/ZKMcaKCLVZ+5OOQuxaTCEVeyKQ9iQvAYh",
+	"/kJ8r4WVp8lEADgYSgjRmEQkfCD3FLDgDQ6l23MsbnORKNI89UDqpjjB+iLyIvktktuI+f/G8vkjqcjh",
+	"n+Tdqf4NaYvX+826U33xT7Spxv+epB8OU/RH3ZYJGKbtb7bc6aTWh1OvZTrcnN442yLlN+UtJ8Yz8500",
+	"7CVy6tZcnMKt0i5X7KR6xzfkdfkOL4XMWVIGGSlAfTc18C0+FVvVRXHW8vExYhq1VslFsLcd/28wRSzf",
+	"yMLhNbt/t710PdQmibfFttjuc9rtvgcAAP//SfUYFv8JAAA=",
 }
 
 // GetSwagger returns the Swagger specification corresponding to the generated code

@@ -1,9 +1,12 @@
 openapi: 3.0.1
+
 info:
   title: TuneCast
   description: The TuneCast API enables media server interaction
   version: 1.0.0
+
 paths:
+
   /library:
     get:
       summary: Browse the media library
@@ -17,6 +20,80 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/LibraryItem"
+        default:
+          description: error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /player/pause:
+    put:
+      summary: Pause
+      operationId: putPlayerPause
+      responses:
+        "204":
+          description: successful operation
+        default:
+          description: error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /player/play:
+    put:
+      summary: Play (unpause)
+      operationId: putPlayerPlay
+      responses:
+        "204":
+          description: successful operation
+        default:
+          description: error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /player/status:
+    get:
+      summary: Get the status of the player
+      operationId: getPlayerStatus
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  intent:
+                    description: What the player wants to do
+                    $ref: "#/components/schemas/Status"
+                  renderer:
+                    description: What the renderer is actually doing
+                    $ref: "#/components/schemas/Status"
+        default:
+          description: error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /player/volume:
+    put:
+      summary: Set the intended volume
+      operationId: putPlayerVolume
+      parameters:
+      - name: value
+        in: query
+        description: "The new value"
+        required: true
+        schema:
+          $ref: "#/components/schemas/Volume"
+      responses:
+        "204":
+          description: successful operation
         default:
           description: error
           content:
@@ -59,3 +136,24 @@ components:
         - nameDesc
         - dateAsc
         - dateDesc
+    Status:
+      type: object
+      properties:
+        activity:
+          type: string
+          default: stopped
+          enum:
+            - inactive
+            - paused
+            - playing
+            - stopped
+        track:
+          description: The track currently playing
+          type: string
+        volume:
+          $ref: "#/components/schemas/Volume"
+    Volume:
+      type: integer
+      format: int32
+      minimum: 0
+      maximum: 100
