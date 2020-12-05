@@ -28,7 +28,7 @@ type MediaLibrary struct {
 
 // New returns a new MediaLibrary:
 func New(logger *logrus.Logger, config *configuration.Config, libraryStorage storage.Storage) (*MediaLibrary, error) {
-	logger.WithField("path", config.Library.Path).Info("Preparing a new MediaLibrary")
+	logger.WithField("path", config.Library.Path).Info("Preparing a new MediaLibrary ...")
 
 	mediaLibrary := &MediaLibrary{
 		config:           config,

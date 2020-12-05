@@ -50,7 +50,7 @@ func main() {
 	}
 
 	// Prepare a Chromecast renderer:
-	chromecastRenderer, err := chromecast.New()
+	chromecastRenderer, err := chromecast.New(logger, config)
 	if err != nil {
 		logger.WithError(err).Fatal("Unable to prepare a Chromecast renderer")
 	}

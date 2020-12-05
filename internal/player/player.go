@@ -2,6 +2,7 @@ package player
 
 import (
 	"sync"
+	"time"
 
 	"github.com/chrusty/tunecast/api"
 	"github.com/chrusty/tunecast/internal/renderer"
@@ -23,11 +24,17 @@ type Player struct {
 
 // New returns a configured Player:
 func New(logger *logrus.Logger, renderer renderer.Renderer) *Player {
-	return &Player{
+	logger.Info("Preparing a new player ...")
+
+	newPlayer := &Player{
 		logger:   logger,
 		renderer: renderer,
 		volume:   75,
 	}
+
+	go newPlayer.enforceIntent(time.Second)
+
+	return newPlayer
 }
 
 // AddToQueue adds a libraryItem to our queue:

@@ -9,6 +9,6 @@ type Renderer interface {
 	PlayLibraryItem(libraryItem *api.LibraryItem) error
 	SetPaused() error
 	SetPlaying() error
-	SetVolume(percentage int) error
+	SetVolume(percentage int32) error
 	Status() (*api.Status, error)
 }

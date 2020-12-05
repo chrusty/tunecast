@@ -23,11 +23,11 @@ Music server with Chromecast
 - [x] Config (music directory, port, chromecast device)
 - [x] API (OAPI-Codegen)
     - [x] List
-    - [ ] Play
+    - [x] Play/Pause
     - [ ] Queue
     - [ ] Stop
     - [ ] Scan
-    - [ ] Status
+    - [x] Status
 - [x] Server
     - [x] main
         - [x] Config
@@ -37,11 +37,11 @@ Music server with Chromecast
     - [x] Handler
     - [ ] Browser
     - [x] MediaShare (/media)
-    - [ ] Player
-        - [ ] Maintains "intent"
+    - [x] Player
+        - [x] Maintains "intent"
             - [ ] Playlist
-            - [ ] Volume
-            - [ ] Playing / paused
+            - [x] Volume
+            - [x] Playing / paused
         - [ ] Interacts with a renderer
             - [ ] Chromecast
     - [x] Library (scan, retrieve etc)

@@ -23,6 +23,59 @@ type FakeClientInterface struct {
 		result1 *http.Response
 		result2 error
 	}
+	GetPlayerStatusStub        func(context.Context) (*http.Response, error)
+	getPlayerStatusMutex       sync.RWMutex
+	getPlayerStatusArgsForCall []struct {
+		arg1 context.Context
+	}
+	getPlayerStatusReturns struct {
+		result1 *http.Response
+		result2 error
+	}
+	getPlayerStatusReturnsOnCall map[int]struct {
+		result1 *http.Response
+		result2 error
+	}
+	PutPlayerPauseStub        func(context.Context) (*http.Response, error)
+	putPlayerPauseMutex       sync.RWMutex
+	putPlayerPauseArgsForCall []struct {
+		arg1 context.Context
+	}
+	putPlayerPauseReturns struct {
+		result1 *http.Response
+		result2 error
+	}
+	putPlayerPauseReturnsOnCall map[int]struct {
+		result1 *http.Response
+		result2 error
+	}
+	PutPlayerPlayStub        func(context.Context) (*http.Response, error)
+	putPlayerPlayMutex       sync.RWMutex
+	putPlayerPlayArgsForCall []struct {
+		arg1 context.Context
+	}
+	putPlayerPlayReturns struct {
+		result1 *http.Response
+		result2 error
+	}
+	putPlayerPlayReturnsOnCall map[int]struct {
+		result1 *http.Response
+		result2 error
+	}
+	PutPlayerVolumeStub        func(context.Context, *api.PutPlayerVolumeParams) (*http.Response, error)
+	putPlayerVolumeMutex       sync.RWMutex
+	putPlayerVolumeArgsForCall []struct {
+		arg1 context.Context
+		arg2 *api.PutPlayerVolumeParams
+	}
+	putPlayerVolumeReturns struct {
+		result1 *http.Response
+		result2 error
+	}
+	putPlayerVolumeReturnsOnCall map[int]struct {
+		result1 *http.Response
+		result2 error
+	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
@@ -91,11 +144,276 @@ func (fake *FakeClientInterface) GetLibraryReturnsOnCall(i int, result1 *http.Re
 	}{result1, result2}
 }
 
+func (fake *FakeClientInterface) GetPlayerStatus(arg1 context.Context) (*http.Response, error) {
+	fake.getPlayerStatusMutex.Lock()
+	ret, specificReturn := fake.getPlayerStatusReturnsOnCall[len(fake.getPlayerStatusArgsForCall)]
+	fake.getPlayerStatusArgsForCall = append(fake.getPlayerStatusArgsForCall, struct {
+		arg1 context.Context
+	}{arg1})
+	stub := fake.GetPlayerStatusStub
+	fakeReturns := fake.getPlayerStatusReturns
+	fake.recordInvocation("GetPlayerStatus", []interface{}{arg1})
+	fake.getPlayerStatusMutex.Unlock()
+	if stub != nil {
+		return stub(arg1)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeClientInterface) GetPlayerStatusCallCount() int {
+	fake.getPlayerStatusMutex.RLock()
+	defer fake.getPlayerStatusMutex.RUnlock()
+	return len(fake.getPlayerStatusArgsForCall)
+}
+
+func (fake *FakeClientInterface) GetPlayerStatusCalls(stub func(context.Context) (*http.Response, error)) {
+	fake.getPlayerStatusMutex.Lock()
+	defer fake.getPlayerStatusMutex.Unlock()
+	fake.GetPlayerStatusStub = stub
+}
+
+func (fake *FakeClientInterface) GetPlayerStatusArgsForCall(i int) context.Context {
+	fake.getPlayerStatusMutex.RLock()
+	defer fake.getPlayerStatusMutex.RUnlock()
+	argsForCall := fake.getPlayerStatusArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *FakeClientInterface) GetPlayerStatusReturns(result1 *http.Response, result2 error) {
+	fake.getPlayerStatusMutex.Lock()
+	defer fake.getPlayerStatusMutex.Unlock()
+	fake.GetPlayerStatusStub = nil
+	fake.getPlayerStatusReturns = struct {
+		result1 *http.Response
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeClientInterface) GetPlayerStatusReturnsOnCall(i int, result1 *http.Response, result2 error) {
+	fake.getPlayerStatusMutex.Lock()
+	defer fake.getPlayerStatusMutex.Unlock()
+	fake.GetPlayerStatusStub = nil
+	if fake.getPlayerStatusReturnsOnCall == nil {
+		fake.getPlayerStatusReturnsOnCall = make(map[int]struct {
+			result1 *http.Response
+			result2 error
+		})
+	}
+	fake.getPlayerStatusReturnsOnCall[i] = struct {
+		result1 *http.Response
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeClientInterface) PutPlayerPause(arg1 context.Context) (*http.Response, error) {
+	fake.putPlayerPauseMutex.Lock()
+	ret, specificReturn := fake.putPlayerPauseReturnsOnCall[len(fake.putPlayerPauseArgsForCall)]
+	fake.putPlayerPauseArgsForCall = append(fake.putPlayerPauseArgsForCall, struct {
+		arg1 context.Context
+	}{arg1})
+	stub := fake.PutPlayerPauseStub
+	fakeReturns := fake.putPlayerPauseReturns
+	fake.recordInvocation("PutPlayerPause", []interface{}{arg1})
+	fake.putPlayerPauseMutex.Unlock()
+	if stub != nil {
+		return stub(arg1)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeClientInterface) PutPlayerPauseCallCount() int {
+	fake.putPlayerPauseMutex.RLock()
+	defer fake.putPlayerPauseMutex.RUnlock()
+	return len(fake.putPlayerPauseArgsForCall)
+}
+
+func (fake *FakeClientInterface) PutPlayerPauseCalls(stub func(context.Context) (*http.Response, error)) {
+	fake.putPlayerPauseMutex.Lock()
+	defer fake.putPlayerPauseMutex.Unlock()
+	fake.PutPlayerPauseStub = stub
+}
+
+func (fake *FakeClientInterface) PutPlayerPauseArgsForCall(i int) context.Context {
+	fake.putPlayerPauseMutex.RLock()
+	defer fake.putPlayerPauseMutex.RUnlock()
+	argsForCall := fake.putPlayerPauseArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *FakeClientInterface) PutPlayerPauseReturns(result1 *http.Response, result2 error) {
+	fake.putPlayerPauseMutex.Lock()
+	defer fake.putPlayerPauseMutex.Unlock()
+	fake.PutPlayerPauseStub = nil
+	fake.putPlayerPauseReturns = struct {
+		result1 *http.Response
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeClientInterface) PutPlayerPauseReturnsOnCall(i int, result1 *http.Response, result2 error) {
+	fake.putPlayerPauseMutex.Lock()
+	defer fake.putPlayerPauseMutex.Unlock()
+	fake.PutPlayerPauseStub = nil
+	if fake.putPlayerPauseReturnsOnCall == nil {
+		fake.putPlayerPauseReturnsOnCall = make(map[int]struct {
+			result1 *http.Response
+			result2 error
+		})
+	}
+	fake.putPlayerPauseReturnsOnCall[i] = struct {
+		result1 *http.Response
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeClientInterface) PutPlayerPlay(arg1 context.Context) (*http.Response, error) {
+	fake.putPlayerPlayMutex.Lock()
+	ret, specificReturn := fake.putPlayerPlayReturnsOnCall[len(fake.putPlayerPlayArgsForCall)]
+	fake.putPlayerPlayArgsForCall = append(fake.putPlayerPlayArgsForCall, struct {
+		arg1 context.Context
+	}{arg1})
+	stub := fake.PutPlayerPlayStub
+	fakeReturns := fake.putPlayerPlayReturns
+	fake.recordInvocation("PutPlayerPlay", []interface{}{arg1})
+	fake.putPlayerPlayMutex.Unlock()
+	if stub != nil {
+		return stub(arg1)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeClientInterface) PutPlayerPlayCallCount() int {
+	fake.putPlayerPlayMutex.RLock()
+	defer fake.putPlayerPlayMutex.RUnlock()
+	return len(fake.putPlayerPlayArgsForCall)
+}
+
+func (fake *FakeClientInterface) PutPlayerPlayCalls(stub func(context.Context) (*http.Response, error)) {
+	fake.putPlayerPlayMutex.Lock()
+	defer fake.putPlayerPlayMutex.Unlock()
+	fake.PutPlayerPlayStub = stub
+}
+
+func (fake *FakeClientInterface) PutPlayerPlayArgsForCall(i int) context.Context {
+	fake.putPlayerPlayMutex.RLock()
+	defer fake.putPlayerPlayMutex.RUnlock()
+	argsForCall := fake.putPlayerPlayArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *FakeClientInterface) PutPlayerPlayReturns(result1 *http.Response, result2 error) {
+	fake.putPlayerPlayMutex.Lock()
+	defer fake.putPlayerPlayMutex.Unlock()
+	fake.PutPlayerPlayStub = nil
+	fake.putPlayerPlayReturns = struct {
+		result1 *http.Response
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeClientInterface) PutPlayerPlayReturnsOnCall(i int, result1 *http.Response, result2 error) {
+	fake.putPlayerPlayMutex.Lock()
+	defer fake.putPlayerPlayMutex.Unlock()
+	fake.PutPlayerPlayStub = nil
+	if fake.putPlayerPlayReturnsOnCall == nil {
+		fake.putPlayerPlayReturnsOnCall = make(map[int]struct {
+			result1 *http.Response
+			result2 error
+		})
+	}
+	fake.putPlayerPlayReturnsOnCall[i] = struct {
+		result1 *http.Response
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeClientInterface) PutPlayerVolume(arg1 context.Context, arg2 *api.PutPlayerVolumeParams) (*http.Response, error) {
+	fake.putPlayerVolumeMutex.Lock()
+	ret, specificReturn := fake.putPlayerVolumeReturnsOnCall[len(fake.putPlayerVolumeArgsForCall)]
+	fake.putPlayerVolumeArgsForCall = append(fake.putPlayerVolumeArgsForCall, struct {
+		arg1 context.Context
+		arg2 *api.PutPlayerVolumeParams
+	}{arg1, arg2})
+	stub := fake.PutPlayerVolumeStub
+	fakeReturns := fake.putPlayerVolumeReturns
+	fake.recordInvocation("PutPlayerVolume", []interface{}{arg1, arg2})
+	fake.putPlayerVolumeMutex.Unlock()
+	if stub != nil {
+		return stub(arg1, arg2)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeClientInterface) PutPlayerVolumeCallCount() int {
+	fake.putPlayerVolumeMutex.RLock()
+	defer fake.putPlayerVolumeMutex.RUnlock()
+	return len(fake.putPlayerVolumeArgsForCall)
+}
+
+func (fake *FakeClientInterface) PutPlayerVolumeCalls(stub func(context.Context, *api.PutPlayerVolumeParams) (*http.Response, error)) {
+	fake.putPlayerVolumeMutex.Lock()
+	defer fake.putPlayerVolumeMutex.Unlock()
+	fake.PutPlayerVolumeStub = stub
+}
+
+func (fake *FakeClientInterface) PutPlayerVolumeArgsForCall(i int) (context.Context, *api.PutPlayerVolumeParams) {
+	fake.putPlayerVolumeMutex.RLock()
+	defer fake.putPlayerVolumeMutex.RUnlock()
+	argsForCall := fake.putPlayerVolumeArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2
+}
+
+func (fake *FakeClientInterface) PutPlayerVolumeReturns(result1 *http.Response, result2 error) {
+	fake.putPlayerVolumeMutex.Lock()
+	defer fake.putPlayerVolumeMutex.Unlock()
+	fake.PutPlayerVolumeStub = nil
+	fake.putPlayerVolumeReturns = struct {
+		result1 *http.Response
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeClientInterface) PutPlayerVolumeReturnsOnCall(i int, result1 *http.Response, result2 error) {
+	fake.putPlayerVolumeMutex.Lock()
+	defer fake.putPlayerVolumeMutex.Unlock()
+	fake.PutPlayerVolumeStub = nil
+	if fake.putPlayerVolumeReturnsOnCall == nil {
+		fake.putPlayerVolumeReturnsOnCall = make(map[int]struct {
+			result1 *http.Response
+			result2 error
+		})
+	}
+	fake.putPlayerVolumeReturnsOnCall[i] = struct {
+		result1 *http.Response
+		result2 error
+	}{result1, result2}
+}
+
 func (fake *FakeClientInterface) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
 	fake.getLibraryMutex.RLock()
 	defer fake.getLibraryMutex.RUnlock()
+	fake.getPlayerStatusMutex.RLock()
+	defer fake.getPlayerStatusMutex.RUnlock()
+	fake.putPlayerPauseMutex.RLock()
+	defer fake.putPlayerPauseMutex.RUnlock()
+	fake.putPlayerPlayMutex.RLock()
+	defer fake.putPlayerPlayMutex.RUnlock()
+	fake.putPlayerVolumeMutex.RLock()
+	defer fake.putPlayerVolumeMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value
