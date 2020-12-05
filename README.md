@@ -27,6 +27,7 @@ Music server with Chromecast
     - [ ] Queue
     - [ ] Stop
     - [ ] Scan
+    - [ ] Status
 - [x] Server
     - [x] main
         - [x] Config
@@ -36,11 +37,24 @@ Music server with Chromecast
     - [x] Handler
     - [ ] Browser
     - [x] MediaShare (/media)
+    - [ ] Player
+        - [ ] Maintains "intent"
+            - [ ] Playlist
+            - [ ] Volume
+            - [ ] Playing / paused
+        - [ ] Interacts with a renderer
+            - [ ] Chromecast
     - [x] Library (scan, retrieve etc)
         - [x] Storage
             - [x] SQLite
 - [ ] Web UI (from API)
 - [ ] Chromecast integration
+    - [ ] Status kept in memory, updated from ChromeCast, provided to player
+        - [ ] Current "application"
+        - [ ] Current track
+        - [ ] Current position
+        - [ ] Volume
+        - [ ] Playing / paused
     - [ ] Default player at first
     - [ ] Media links are served from a static endpoint
 - [x] Makefile
